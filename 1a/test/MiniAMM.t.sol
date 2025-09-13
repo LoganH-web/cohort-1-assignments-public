@@ -22,11 +22,14 @@ contract MiniAMMTest is Test {
 
     function setUp() public {
         // Deploy mock tokens
-        token0 = new MockERC20("Token A", "TKA");
-        token1 = new MockERC20("Token B", "TKB");
+        //token0 = new MockERC20("Token A", "TKA");
+        //token1 = new MockERC20("Token B", "TKB");
+        token0 = MockERC20(0x7B5904fc6B25Adf5f95362F5cd4B73b516B0790C);
+        token1 = MockERC20(0x58E3183Df5368eb7897BD66bB5fB27512A7f162F);
 
         // Deploy MiniAMM with the tokens
-        miniAMM = new MiniAMM(address(token0), address(token1));
+        // miniAMM = new MiniAMM(address(token0), address(token1));
+        miniAMM = MiniAMM(0x4FCA2EDfe9f9Bf2d98F55c793507876db6c59F18);
 
         // Mint tokens to test addresses
         token0.freeMintTo(10000 * 10 ** 18, alice);
