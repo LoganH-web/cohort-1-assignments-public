@@ -1,5 +1,5 @@
 const from = eth.accounts[0];
-const contractDeployer = "0x404fa3f0Acf620e3d2A3c6aa80E27b07C830EB5a";
+const contractDeployer = "0xD76ce7F02351Ab3E3103ee3b6A64601BEc580c6E";  //change thsis to your contract deployer address
 eth.sendTransaction({
   from: from,
   to: contractDeployer,

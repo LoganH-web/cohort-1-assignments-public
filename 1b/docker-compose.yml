@@ -1,11 +1,12 @@
 version: "3.8"
 
+
 services:
   caddy:
     image: caddy:2.7-alpine
     container_name: caddy
     ports:
-      - "8080:80"
+      - "8085:80"
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile
     depends_on:
@@ -13,7 +14,7 @@ services:
     networks:
       - geth-network
   sc-deployer:
-    image: ghcr.io/hell-month/foundry:latest
+    image: ghcr.io/foundry-rs/foundry:latest
     platform: linux/arm64
     container_name: sc-deployer
     user: root
@@ -42,9 +43,9 @@ services:
   geth:
     image: ethereum/client-go:v1.15.0
     container_name: geth
-    ports:
-      - "8545:8545"  # HTTP RPC
-      - "8546:8546"  # WebSocket RPC
+    ports:  
+      - "8545:8545"
+      - "8546:8546"  # Add WebSocket port
       - "30303:30303"  # P2P
       - "30303:30303/udp"  # P2P UDP
     volumes:
@@ -58,11 +59,11 @@ services:
       --http.port 8545
       --http.corsdomain "*"
       --http.vhosts "*"
-      --http.api "eth,net,web3,personal,miner,admin,debug"
+      --http.api "eth,net,web3,personal,miner,admin,debug,txpool"
       --ws
       --ws.addr 0.0.0.0
       --ws.port 8546
-      --ws.api "eth,net,web3,personal,miner,admin,debug"
+      --ws.api "eth,net,web3,personal,miner,admin,debug,txpool"
       --ws.origins "*"
       --allow-insecure-unlock
       --mine
@@ -85,16 +86,82 @@ services:
       - geth
     networks:
       - geth-network
-  # graph-ipfs:
-  # graph-postgres:
-  # graph-redis:
-  # graph-node:
+  graph-postgres:
+    image: postgres:13
+    container_name: graph-postgres
+    environment:
+      POSTGRES_USER: graph
+      POSTGRES_PASSWORD: let-me-in
+      POSTGRES_DB: graph
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    command: postgres -c 'max_connections=100' -c 'shared_buffers=256MB' -c 'log_statement=all' -c 'log_connections=on' -c 'log_disconnections=on'
+    volumes:
+      - graph-postgres-data:/var/lib/postgresql/data
+    networks:
+      - geth-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U graph"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+  graph-ipfs:
+    image: ipfs/kubo:v0.22.0
+    container_name: graph-ipfs
+    networks:
+      - geth-network
+  graph-redis:
+    image: redis:7.0.12
+    container_name: graph-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - geth-network
+  graph-node:
+    image: graphprotocol/graph-node:v0.33.0
+    container_name: graph-node
+    depends_on:
+      graph-postgres:
+        condition: service_healthy
+      graph-ipfs:
+        condition: service_started
+    environment:
+      postgres_host: graph-postgres
+      postgres_user: graph
+      postgres_pass: let-me-in
+      postgres_db: graph
+      ipfs: "graph-ipfs:5001"
+      ethereum: "mainnet:http://geth:8545"
+      GRAPH_LOG: debug
+      RUST_BACKTRACE: 1
+    networks:
+      - geth-network
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8020:8020"
+    restart: unless-stopped
+  nginx:
+    image: nginx:alpine
+    container_name: graph-nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8083:80"
+    networks:
+      - geth-network
+    depends_on:
+      - graph-node
+      - geth
+    restart: always
 
-  # blockscout: should be another docker-compose.yml file from https://github.com/blockscout/blockscout/tree/master/docker-compose. Don't create a container in this file.
 
 volumes:
   geth-data:
+  graph-postgres-data:
+
 
 networks:
   geth-network:
-    driver: bridge
+    name: 1b_geth-network
+    external: true
