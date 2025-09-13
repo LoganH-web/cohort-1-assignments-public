@@ -1,0 +1,15 @@
+{
+  "name": "miniamm-subgraph",
+  "version": "0.1.0",
+  "scripts": {
+    "codegen": "npx graph codegen",
+    "build": "npx graph build",
+    "create": "npx graph create --node https://api.thegraph.com/deploy/ LoganH-web/miniamm",
+    "deploy": "npx graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ LoganH-web/miniamm",
+    "deploy-local": "npx graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 miniamm"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.97.1",
+    "@graphprotocol/graph-ts": "^0.38.1"
+  }
+}

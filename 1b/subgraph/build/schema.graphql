@@ -1,0 +1,8 @@
+type Swap @entity(immutable: true) {
+  id: ID!
+  user: Bytes!
+  token0Amount: BigInt!
+  token1Amount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+}
