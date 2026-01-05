@@ -1,5 +1,8 @@
 # HellMonth Cohort 1 - DApp Development Course
 
+A comprehensive decentralized finance (DeFi) application based on Uniswap V2 contracts, developed during the intensive **HellMonth** blockchain development bootcamp. I have completed this course during the 2025 summer break and successfully developed MiniAMM. 
+
+
 - [1a](./1a)
 - [1b](./1b)
 - [2](./2)
@@ -9,7 +12,7 @@
 
 **HellMonth** is an intensive month-long blockchain development course hosted by **Joel**, a prominent blockchain community leader in South Korea. Joel runs a thriving blockchain education platform with over 400+ active users, where he shares knowledge and fosters collaboration among blockchain enthusiasts. 
 
-This course was designed to take participants from blockchain fundamentals to building production-ready decentralized applications in just one month. Through hands-on assignments with strict deadlines, students learned to build a complete DApp ecosystem including smart contracts, local development environments, frontend interfaces, and subgraph indexers.
+This course was designed to take participants from blockchain fundamentals to building production-ready decentralized applications in just one month. Through hands-on assignments with strict deadlines, students learned to build a complete DApp ecosystem including smart contracts, local development environments, frontend interfaces, and subgraph indexers. 
 
 ## Course Timeline
 
@@ -365,7 +368,7 @@ npm run build
 npm start
 ```
 
-Visit http://localhost:3000
+Visit [http://localhost:3000](https://4.loganhan.workers.dev/)
 
 ## Deployment
 
@@ -544,6 +547,6 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ---
 
-**Built with ❤️ during HellMonth 2024**
+**Built with ❤️ during HellMonth 2025**
 
 *A month-long intensive blockchain development bootcamp*
