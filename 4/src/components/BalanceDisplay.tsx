@@ -9,7 +9,7 @@ export function BalanceDisplay() {
   const { address, isConnected } = useAccount()
 
   // Read TOKEN_A balance in wallet
-  const { data: tokenABalance, refetch: refetchTokenABalance } = useReadContract({
+  const { data: tokenABalance } = useReadContract({
     address: CONTRACT_ADDRESSES.TOKEN_A as `0x${string}`,
     abi: MockERC20__factory.abi,
     functionName: 'balanceOf',
@@ -20,7 +20,7 @@ export function BalanceDisplay() {
   })
 
   // Read TOKEN_B balance in wallet
-  const { data: tokenBBalance, refetch: refetchTokenBBalance } = useReadContract({
+  const { data: tokenBBalance } = useReadContract({
     address: CONTRACT_ADDRESSES.TOKEN_B as `0x${string}`,
     abi: MockERC20__factory.abi,
     functionName: 'balanceOf',
@@ -31,7 +31,7 @@ export function BalanceDisplay() {
   })
 
   // Read TOKEN_A reserves in MiniAMM
-  const { data: tokenAReserves, refetch: refetchTokenAReserves } = useReadContract({
+  const { data: tokenAReserves } = useReadContract({
     address: CONTRACT_ADDRESSES.TOKEN_A as `0x${string}`,
     abi: MockERC20__factory.abi,
     functionName: 'balanceOf',
@@ -39,7 +39,7 @@ export function BalanceDisplay() {
   })
 
   // Read TOKEN_B reserves in MiniAMM
-  const { data: tokenBReserves, refetch: refetchTokenBReserves } = useReadContract({
+  const { data: tokenBReserves } = useReadContract({
     address: CONTRACT_ADDRESSES.TOKEN_B as `0x${string}`,
     abi: MockERC20__factory.abi,
     functionName: 'balanceOf',
@@ -47,7 +47,7 @@ export function BalanceDisplay() {
   })
 
   // Read LP token balance
-  const { data: lpTokenBalance, refetch: refetchLPBalance } = useReadContract({
+  const { data: lpTokenBalance } = useReadContract({
     address: CONTRACT_ADDRESSES.MINIAMM as `0x${string}`,
     abi: MiniAMM__factory.abi,
     functionName: 'balanceOf',
@@ -64,30 +64,6 @@ export function BalanceDisplay() {
     functionName: 'totalSupply',
   })
 
-  // Read token names
-  const { data: tokenAName } = useReadContract({
-    address: CONTRACT_ADDRESSES.TOKEN_A as `0x${string}`,
-    abi: MockERC20__factory.abi,
-    functionName: 'name',
-  })
-
-  const { data: tokenBName } = useReadContract({
-    address: CONTRACT_ADDRESSES.TOKEN_B as `0x${string}`,
-    abi: MockERC20__factory.abi,
-    functionName: 'name',
-  })
-
-  // Refresh all balances function
-  const refreshBalances = () => {
-    if (isConnected) {
-      refetchTokenABalance()
-      refetchTokenBBalance()
-      refetchLPBalance()
-    }
-    refetchTokenAReserves()
-    refetchTokenBReserves()
-  }
-
   // Calculate pool share percentage
   const poolSharePercentage = lpTokenBalance && lpTotalSupply && lpTotalSupply > BigInt(0)
     ? (Number(lpTokenBalance) / Number(lpTotalSupply)) * 100
@@ -98,88 +74,70 @@ export function BalanceDisplay() {
     ? parseFloat(formatEther(tokenBReserves)) / parseFloat(formatEther(tokenAReserves))
     : 0
 
+  // Check if pool has liquidity
+  const hasLiquidity = tokenAReserves && tokenBReserves && tokenAReserves > BigInt(0) && tokenBReserves > BigInt(0)
+
   if (!isConnected) {
     return (
-      <div className="space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Balance Overview</h2>
-          <p className="text-gray-600">
-            Connect your wallet to view your token balances
-          </p>
-        </div>
-
-        {/* Pool Information - Available without wallet connection */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Pool Information</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">TOKEN_A Reserves</p>
-              <p className="text-xl font-bold text-blue-600">
-                {tokenAReserves ? parseFloat(formatEther(tokenAReserves)).toFixed(2) : '0.00'}
-              </p>
-              <p className="text-xs text-gray-500">TKA</p>
-            </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">TOKEN_B Reserves</p>
-              <p className="text-xl font-bold text-green-600">
-                {tokenBReserves ? parseFloat(formatEther(tokenBReserves)).toFixed(2) : '0.00'}
-              </p>
-              <p className="text-xs text-gray-500">TKB</p>
-            </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">Current Price</p>
-              <p className="text-xl font-bold text-purple-600">
-                {currentPrice > 0 ? currentPrice.toFixed(4) : '0.0000'}
-              </p>
-              <p className="text-xs text-gray-500">TKB per TKA</p>
-            </div>
-          </div>
-          
-          {tokenAReserves === BigInt(0) && tokenBReserves === BigInt(0) && (
-            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-              <p className="text-yellow-800 text-sm">
-                💡 The pool is empty. Add liquidity to start trading!
-              </p>
-            </div>
-          )}
-        </div>
+      <div className="glass-card p-8 rounded-xl">
+        <h3 className="text-xl font-semibold text-display mb-4">Balance Overview</h3>
+        <p className="text-color-text-tertiary text-center py-8">
+          Connect your wallet to view your balances
+        </p>
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Balance Overview</h2>
-        <p className="text-gray-600">
-          Your wallet balances and pool information
-        </p>
-      </div>
+      {/* Your Wallet Balances */}
+      <div className="glass-card p-8 rounded-xl">
+        <h3 className="text-xl font-semibold text-display mb-6 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-gradient-primary"></span>
+          Your Wallet
+        </h3>
 
-      {/* Wallet Balances */}
-      <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Wallet</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <p className="text-sm text-gray-600 mb-1">{tokenAName || 'TOKEN_A'}</p>
-            <p className="text-2xl font-bold text-blue-600">
+          {/* TOKEN_A Balance */}
+          <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 p-5 rounded-lg border border-color-border-primary hover:border-blue-500/30 transition-all">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm text-color-text-secondary font-medium">TKA</span>
+              <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                <span className="text-blue-400 text-xs font-bold">A</span>
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-color-text-primary mb-1">
               {tokenABalance ? parseFloat(formatEther(tokenABalance)).toFixed(2) : '0.00'}
             </p>
-            <p className="text-xs text-gray-500">TKA</p>
+            <p className="text-xs text-color-text-tertiary">TOKEN_A</p>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <p className="text-sm text-gray-600 mb-1">{tokenBName || 'TOKEN_B'}</p>
-            <p className="text-2xl font-bold text-green-600">
+
+          {/* TOKEN_B Balance */}
+          <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 p-5 rounded-lg border border-color-border-primary hover:border-purple-500/30 transition-all">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm text-color-text-secondary font-medium">TKB</span>
+              <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                <span className="text-purple-400 text-xs font-bold">B</span>
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-color-text-primary mb-1">
               {tokenBBalance ? parseFloat(formatEther(tokenBBalance)).toFixed(2) : '0.00'}
             </p>
-            <p className="text-xs text-gray-500">TKB</p>
+            <p className="text-xs text-color-text-tertiary">TOKEN_B</p>
           </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <p className="text-sm text-gray-600 mb-1">LP Tokens</p>
-            <p className="text-2xl font-bold text-purple-600">
+
+          {/* LP Tokens */}
+          <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 p-5 rounded-lg border border-color-border-primary hover:border-amber-500/30 transition-all">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm text-color-text-secondary font-medium">LP</span>
+              <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
+                <span className="text-gray-900 text-xs font-bold">LP</span>
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-color-text-primary mb-1">
               {lpTokenBalance ? parseFloat(formatEther(lpTokenBalance)).toFixed(6) : '0.000000'}
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-color-text-tertiary">
               {poolSharePercentage > 0 ? `${poolSharePercentage.toFixed(2)}% of pool` : 'No share'}
             </p>
           </div>
@@ -187,75 +145,73 @@ export function BalanceDisplay() {
       </div>
 
       {/* Pool Information */}
-      <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">MiniAMM Pool</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Pool Reserves */}
-          <div>
-            <h4 className="text-md font-medium text-gray-800 mb-3">Pool Reserves</h4>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-gray-600">TOKEN_A (TKA)</span>
-                <span className="font-semibold text-gray-900">
-                  {tokenAReserves ? parseFloat(formatEther(tokenAReserves)).toFixed(2) : '0.00'}
-                </span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-gray-600">TOKEN_B (TKB)</span>
-                <span className="font-semibold text-gray-900">
-                  {tokenBReserves ? parseFloat(formatEther(tokenBReserves)).toFixed(2) : '0.00'}
-                </span>
+      <div className="glass-card p-8 rounded-xl">
+        <h3 className="text-xl font-semibold text-display mb-6 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-gradient-success"></span>
+          Pool Liquidity
+        </h3>
+
+        {!hasLiquidity ? (
+          <div className="status-warning">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              <div>
+                <p className="font-semibold">Pool is Empty</p>
+                <p className="text-xs mt-1">Add liquidity to enable swapping</p>
               </div>
             </div>
           </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Token A Reserves */}
+            <div className="bg-color-bg-secondary p-6 rounded-lg border border-color-border-primary">
+              <p className="text-xs text-color-text-tertiary mb-2">TKA Reserves</p>
+              <p className="text-2xl font-bold text-color-text-primary">
+                {tokenAReserves ? parseFloat(formatEther(tokenAReserves)).toFixed(2) : '0.00'}
+              </p>
+            </div>
 
-          {/* Pool Stats */}
-          <div>
-            <h4 className="text-md font-medium text-gray-800 mb-3">Pool Statistics</h4>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-gray-600">Current Price</span>
-                <span className="font-semibold text-gray-900">
-                  {currentPrice > 0 ? `${currentPrice.toFixed(4)} TKB/TKA` : 'No price'}
-                </span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <span className="text-gray-600">Total LP Supply</span>
-                <span className="font-semibold text-gray-900">
-                  {lpTotalSupply ? parseFloat(formatEther(lpTotalSupply)).toFixed(6) : '0.000000'}
-                </span>
-              </div>
+            {/* Token B Reserves */}
+            <div className="bg-color-bg-secondary p-6 rounded-lg border border-color-border-primary">
+              <p className="text-xs text-color-text-tertiary mb-2">TKB Reserves</p>
+              <p className="text-2xl font-bold text-color-text-primary">
+                {tokenBReserves ? parseFloat(formatEther(tokenBReserves)).toFixed(2) : '0.00'}
+              </p>
+            </div>
+
+            {/* Current Price */}
+            <div className="bg-color-bg-secondary p-6 rounded-lg border border-color-border-primary">
+              <p className="text-xs text-color-text-tertiary mb-2">Price</p>
+              <p className="text-2xl font-bold text-color-success">
+                {currentPrice > 0 ? currentPrice.toFixed(4) : '0.0000'}
+              </p>
+              <p className="text-xs text-color-text-tertiary mt-1">TKB per TKA</p>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Pool Status Messages */}
-        <div className="mt-4">
-          {tokenAReserves === BigInt(0) && tokenBReserves === BigInt(0) && (
-            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-              <p className="text-yellow-800 text-sm font-medium">
-                💡 Pool is Empty
-              </p>
-              <p className="text-yellow-700 text-xs mt-1">
-                Be the first to add liquidity to this pool and start earning fees!
-              </p>
+        {/* Pool Stats */}
+        {hasLiquidity && (
+          <div className="mt-4 pt-4 border-t border-color-border-primary">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-color-text-secondary">Total LP Supply:</span>
+              <span className="font-mono font-semibold text-color-text-primary">
+                {lpTotalSupply ? parseFloat(formatEther(lpTotalSupply)).toFixed(6) : '0.000000'}
+              </span>
             </div>
-          )}
-          
-          {tokenAReserves && tokenBReserves && tokenAReserves > BigInt(0) && tokenBReserves > BigInt(0) && (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-md">
-              <p className="text-green-800 text-sm font-medium">
-                ✅ Pool is Active
-              </p>
-              <p className="text-green-700 text-xs mt-1">
-                Pool has liquidity and is ready for swaps. Current K value: {(parseFloat(formatEther(tokenAReserves)) * parseFloat(formatEther(tokenBReserves))).toFixed(2)}
-              </p>
+            <div className="flex items-center justify-between text-sm mt-2">
+              <span className="text-color-text-secondary">K Value (x × y):</span>
+              <span className="font-mono font-semibold text-color-text-primary">
+                {tokenAReserves && tokenBReserves
+                  ? (parseFloat(formatEther(tokenAReserves)) * parseFloat(formatEther(tokenBReserves))).toFixed(2)
+                  : '0.00'}
+              </span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-
-
     </div>
   )
 }

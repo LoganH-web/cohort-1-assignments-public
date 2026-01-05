@@ -7,9 +7,9 @@ Create a user interface for MiniAMM, a simple automated market maker (AMM) decen
 - **Network**: Flare Coston2 Testnet
 - **RPC URL**: Use appropriate RPC for Flare Coston2 testnet
 - **Contracts**:
-  - TOKEN_A: `0xE7Cd78eB31aA5E083DB770b0E4434Fd08d8Cc69a` (MockERC20)
-  - TOKEN_B: `0xF4112519E0408F152009F77762Cf8BCaE7F21AC6` (MockERC20)
-  - MINIAMM: `0x6d20BAF1bD22B24195cAd3b3ae34016D5F8322F3` (MiniAMM contract)
+  - TOKEN_A: `0x39825E5C2f771cE43d56C3f7890E275673e7D8Fc` (MockERC20)
+  - TOKEN_B: `0xFE603Cc80cB91D89437DF7d6cb4b3494d9AbE118` (MockERC20)
+  - MINIAMM: `0xD37E910CB75b9c354120102D93d62a8697eE1f12` (MiniAMM contract)
 
 ## Technology Stack
 ### Blockchain Interaction (Required)
@@ -145,24 +145,43 @@ Create a user interface for MiniAMM, a simple automated market maker (AMM) decen
 2. **Token Operations** - Complete minting and approval interface for TOKEN_A and TOKEN_B
 3. **Balance Display** - Real-time wallet and pool balance monitoring with auto-refresh
 4. **Swap Interface** - Full AMM swap functionality with constant-product formula (x*y=k)
-5. **Liquidity Management** - Complete add/remove liquidity with ratio calculations
-6. **Contract Integration** - Full TypeChain integration with type-safe contract interactions
-7. **State Management & UX** - Loading states, error handling, transaction feedback
-8. **UI/UX Components** - Professional styling, responsive design, intuitive interface
-
-### 🎉 PROJECT STATUS: **FULLY COMPLETED** ✅
-**All core MiniAMM functionality has been successfully implemented!**
-
-The application now provides a complete decentralized exchange experience with:
-- ✅ Wallet connection and management
-- ✅ Token minting and approvals  
-- ✅ Real-time balance monitoring
-- ✅ AMM token swapping with price calculations
-- ✅ Liquidity provision and removal
-- ✅ Professional UI with comprehensive error handling
 
 ## Notes
 - All contract interactions must use TypeChain-generated types
 - Focus on user experience with clear feedback and loading states
 - Ensure proper error handling for all blockchain interactions
-- Test thoroughly on Flare Coston2 testnet before considering complete
+- Test thoroughly on Flare Coston2 testnet before considering complete---
+
+## UI Refinement Requirements (2025-11-25)
+
+### Status Tracking
+- [x] 1. ~~Change top-left title to "Hell Month" and move "Automated Market Maker" subtitle to center below "MiniAMM"~~ ✅
+- [x] 2. ~~Move all elements below the MiniAMM title to the center~~ ✅
+- [x] 3. ~~Enlarge the title of each tab and give bigger margins~~ ✅
+- [x] 4. ~~"Wallet Connected" box should only appear in Portfolio tab~~ ✅
+- [x] 5. ~~Change all fonts to Inter or similar contemporary sans-serif typeface~~ ✅
+- [x] 6. ~~Give more margin for all function elements~~ ✅
+- [ ] 7. Reduce unused space at bottom - enlarge function elements and reduce empty space
+- [x] 8. ~~Change color of "TKA → TKB" text in Token Swap to white for visibility~~ ✅
+- [x] 9. ~~Adjust text padding in rounded boxes (Token Swap, Manage Liquidity, Your Wallet) - move text away from borders~~ ✅
+
+### Progress Summary
+**Completed (8/9):**
+- ✅ Requirement 1: Title changed to "Hell Month" in top-left, subtitle "Automated Market Maker" centered
+- ✅ Requirement 2: All content below MiniAMM properly centered using flex layout
+- ✅ Requirement 3: Tab titles enlarged (text-base), padding increased (py-4 px-8), bigger gaps
+- ✅ Requirement 4: WalletStatus component conditionally displayed only in Portfolio tab
+- ✅ Requirement 5: Inter font applied globally throughout application
+- ✅ Requirement 6: Increased margins throughout (mb-10 for tabs, mb-8 for wallet status, space-y-10 for sections, text-2xl mb-6 for section titles)
+- ✅ Requirement 8: Swap arrow color changed to text-color-text-primary for better visibility
+- ✅ Requirement 9: Padding increased in all rounded input/display boxes (p-6→p-8 for main boxes, p-4→p-6 for info boxes)
+
+**Remaining (1/9):**
+- ⏸️ Requirement 7 - Reduce bottom empty space
+
+### Notes
+- Requirements being implemented incrementally with user review between each step
+- **Session paused on 2025-11-25 at 05:11** - Continue from Requirement #4
+- All changes properly centered with flex justify-center layout
+
+

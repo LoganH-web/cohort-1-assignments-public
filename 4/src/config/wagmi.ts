@@ -5,5 +5,5 @@ export const wagmiConfig = getDefaultConfig({
   appName: 'MiniAMM UI',
   projectId: 'YOUR_PROJECT_ID', // Replace with your WalletConnect project ID
   chains: [flareCoston2],
-  ssr: true, // If your dApp uses server side rendering (SSR)
+  ssr: false,
 })
