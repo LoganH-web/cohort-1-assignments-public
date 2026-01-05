@@ -1,6 +1,9 @@
 # HellMonth Cohort 1 - DApp Development Course
 
-A comprehensive decentralized finance (DeFi) application based on Uniswap V2 contracts, developed during the intensive **HellMonth** blockchain development bootcamp.
+- [1a](./1a)
+- [1b](./1b)
+- [2](./2)
+- [4](./4)
 
 ## About HellMonth
 
