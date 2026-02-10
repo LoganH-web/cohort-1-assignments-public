@@ -1,6 +1,6 @@
 # HellMonth Cohort 1 - DApp Development Course
 
-A comprehensive decentralized finance (DeFi) application based on Uniswap V2 contracts, developed during the intensive **HellMonth** blockchain development bootcamp. I have completed this course during the 2025 summer break and successfully developed MiniAMM. 
+A comprehensive decentralized finance (DeFi) application based on Uniswap V2 contracts, developed during the intensive **HellMonth** blockchain development course. I have completed this course during the 2025 summer break and successfully developed MiniAMM. 
 
 
 - [1a](./1a)
